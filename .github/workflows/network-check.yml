@@ -24,4 +24,5 @@ jobs:
             echo "Successfully connected to $url"
           else
             echo "Failed to connect to $url with HTTP status code: $response"
-          endif
+          fi
+
