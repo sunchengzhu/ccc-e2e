@@ -2,7 +2,7 @@
 
 ## usage
 
- ### Install default browsers
+ ### 1. Install default browsers
 
 ```bash
 npx playwright install
@@ -10,7 +10,7 @@ npx playwright install
 
 
 
-### Run tests
+### 2. Run tests
 
 #### Headless (default: enabled)
 
