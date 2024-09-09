@@ -9,12 +9,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # 也升级到最新版本
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
 
       - name: Install Playwright
         run: npx playwright install
@@ -23,7 +26,7 @@ jobs:
         run: npx playwright test
 
       - name: Upload test results
-        uses: actions/upload-artifact@v3  # 更新到最新版本
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: playwright-test-results
