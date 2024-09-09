@@ -11,6 +11,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Get public IP and location
+        run: |
+          response=$(curl -s http://ipinfo.io/json)
+          echo "IP and Location Information: $response"
+
+      - name: Check connectivity to specific website
+        run: |
+          url="https://app.ckbccc.com/"
+          response=$(curl -s -o /dev/null -w "%{http_code}" $url)
+          if [ "$response" -eq 200 ]; then
+            echo "Successfully connected to $url"
+          else
+            echo "Failed to connect to $url with HTTP status code: $response"
+          fi
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -19,8 +34,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Playwright
-        run: npx playwright install
+      - name: Install Playwright Chromium
+        run: npx playwright install chromium
 
       - name: Run Playwright tests
         run: npx playwright test

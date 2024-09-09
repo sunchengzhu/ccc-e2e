@@ -2,10 +2,10 @@
 
 ## usage
 
- ### 1. Install default browsers
+ ### 1. Install Chromium Browser
 
 ```bash
-npx playwright install
+npx playwright install chromium
 ```
 
 
