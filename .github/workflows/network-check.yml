@@ -1,0 +1,27 @@
+name: Network Check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check-network:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get public IP and location
+        run: |
+          response=$(curl -s http://ipinfo.io/json)
+          echo "IP and Location Information: $response"
+
+      - name: Check connectivity to specific website
+        run: |
+          url="https://app.ckbccc.com/"
+          response=$(curl -s -o /dev/null -w "%{http_code}" $url)
+          if [ "$response" -eq 200 ]; then
+            echo "Successfully connected to $url"
+          else
+            echo "Failed to connect to $url with HTTP status code: $response"
+          endif
