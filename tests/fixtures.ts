@@ -42,6 +42,10 @@ const test = baseTest.extend({
         `--disable-extensions-except=${extensionPath}`,
         `--load-extension=${extensionPath}`,
       ],
+      // 添加录屏设置
+      recordVideo: {
+        dir: 'videos/' // 视频将被保存在这个目录
+      }
     });
 
     await use(context);
