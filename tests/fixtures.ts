@@ -35,6 +35,12 @@ const test = baseTest.extend({
   context: async ({}, use) => {
     await extractZip(); // 这里是测试开始前执行的操作
 
+    const videoDir = 'videos/';
+    // 清理视频目录
+    if (fs.existsSync(videoDir)) {
+      fs.rmSync(videoDir, { recursive: true, force: true }); // 递归删除目录
+    }
+
     const context = await chromium.launchPersistentContext('', {
       // headless:false,
       args: [
@@ -44,7 +50,7 @@ const test = baseTest.extend({
       ],
       // 添加录屏设置
       recordVideo: {
-        dir: 'videos/' // 视频将被保存在这个目录
+        dir: videoDir // 视频将被保存在这个目录
       }
     });
 
