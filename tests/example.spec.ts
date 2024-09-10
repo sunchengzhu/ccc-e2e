@@ -4,7 +4,7 @@ test('Message to sign and verify', async ({context}) => {
   const page = await context.newPage();
   await page.goto("https://app.ckbccc.com/");
 
-  // 设置监听器来处理每一个新创建的页面
+  // 设置监听器来处理第一个新创建的插件页面
   const handleExtensionNewPage = async (extensionNewPage) => {
     await extensionNewPage.waitForLoadState(); // 等待新页面加载完毕
     if (extensionNewPage.url().includes('notification.html')) {
@@ -29,6 +29,7 @@ test('Message to sign and verify', async ({context}) => {
   context.on('page', async (extensionNewPage) => {
     await extensionNewPage.waitForLoadState(); // 等待新页面加载完毕
     if (extensionNewPage.url().includes('notification.html')) {
+      await extensionNewPage.waitForSelector('[data-testid="confirm-footer-button"]', { state: 'visible', timeout: 10000 });
       await extensionNewPage.click('[data-testid="confirm-footer-button"]');
     }
   });
