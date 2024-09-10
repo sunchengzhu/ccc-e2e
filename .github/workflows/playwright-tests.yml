@@ -40,9 +40,9 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
 
-      - name: Upload test results
+      - name: Upload playwright report
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: playwright-test-results
-          path: test-results/
+          name: playwright-report
+          path: playwright-report/
