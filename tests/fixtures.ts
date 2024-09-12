@@ -42,9 +42,9 @@ const test = baseTest.extend({
     }
 
     const context = await chromium.launchPersistentContext('', {
-      // headless:false,
+      headless:false,
       args: [
-        `--headless=new`,
+        // `--headless=new`,
         `--disable-extensions-except=${extensionPath}`,
         `--load-extension=${extensionPath}`,
       ],
