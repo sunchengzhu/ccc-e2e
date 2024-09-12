@@ -44,5 +44,5 @@ jobs:
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: videos/
+          name: videos
           path: playwright-report/
