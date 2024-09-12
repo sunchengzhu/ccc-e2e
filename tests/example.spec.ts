@@ -1,38 +1,43 @@
 import { test, expect } from './fixtures';
+import moment = require('moment-timezone');
 
 test('Message to sign and verify', async ({context}) => {
   const page = await context.newPage();
   await page.goto("https://app.ckbccc.com/");
 
-  // 设置监听器来处理第一个新创建的插件页面
-  const handleExtensionNewPage = async (extensionNewPage) => {
-    await extensionNewPage.waitForLoadState(); // 等待新页面加载完毕
-    if (extensionNewPage.url().includes('notification.html')) {
-      // 点击复选框两次，全部都不选
-      await extensionNewPage.click('input.mm-checkbox__input[type="checkbox"]');
-      await extensionNewPage.click('input.mm-checkbox__input[type="checkbox"]');
-      await extensionNewPage.click('[data-testid="choose-account-list-1"]');
-      await extensionNewPage.click('[data-testid="page-container-footer-next"]');
-      await extensionNewPage.click('[data-testid="page-container-footer-next"]');
-      // 条件满足后取消监听
-      context.off('page', handleExtensionNewPage);
-    }
-    await extensionNewPage.waitForEvent('close');
-    console.log('Extension page has closed.');
+  const getFormattedTime = () => {
+    return moment().tz('Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss.SSS');
   };
 
-  context.on('page', handleExtensionNewPage);
+  let pageLoadCount = 0; // 从0开始计数
+  const waitForPageClose = new Promise<void>((resolve) => {
+    context.on('page', async (extensionNewPage) => {
+      pageLoadCount += 1; // 每次新页面加载时递增计数
+      console.log(`Extension New Page ${pageLoadCount} opened at: ${getFormattedTime()}`);
+      await extensionNewPage.waitForLoadState(); // 等待新页面加载完毕
+      if (extensionNewPage.url().includes('notification.html')) {
+        if (pageLoadCount === 1) { // 计数器为 1 时执行
+          await extensionNewPage.click('[data-testid="choose-account-list-0"]');
+          await extensionNewPage.click('[data-testid="choose-account-list-1"]');
+          await extensionNewPage.click('[data-testid="page-container-footer-next"]');
+          await extensionNewPage.click('[data-testid="page-container-footer-next"]');
+        } else {
+          await extensionNewPage.waitForLoadState('networkidle');
+          await extensionNewPage.click('[data-testid="confirm-footer-button"]');
+        }
+        await extensionNewPage.waitForEvent('close');
+        console.log(`Extension New Page ${pageLoadCount} closed at: ${getFormattedTime()}`);
+        // 页面关闭后，解析 Promise，表示事件已完成
+        resolve();
+      }
+    });
+  });
 
   await page.getByRole('button', {name: 'Wallet'}).click();
   await page.getByRole('button', {name: 'MetaMask'}).click();
 
-  context.on('page', async (extensionNewPage) => {
-    await extensionNewPage.waitForLoadState(); // 等待新页面加载完毕
-    if (extensionNewPage.url().includes('notification.html')) {
-      await extensionNewPage.waitForSelector('[data-testid="confirm-footer-button"]', { state: 'visible', timeout: 10000 });
-      await extensionNewPage.click('[data-testid="confirm-footer-button"]');
-    }
-  });
+  // 等待 `extensionNewPage` 关闭后，再执行接下来的操作
+  await waitForPageClose;
 
   await page.getByRole('button', {name: 'Sign'}).click();
   await page.fill('input[placeholder="Message to sign and verify"]', '666');

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@tenkeylabs/dappwright": "^2.8.5",
-    "adm-zip": "^0.5.16"
+    "adm-zip": "^0.5.16",
+    "moment-timezone": "^0.5.45"
   }
 }
