@@ -34,7 +34,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-
       - name: Setup Xvfb
         run: |
           sudo apt-get update
@@ -48,9 +47,11 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
 
-      - name: Upload playwright report
+      - name: Upload playwright report and videos
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: videos
-          path: videos/
+          name: reports-and-videos
+          path: |
+            videos/
+            playwright-report/
